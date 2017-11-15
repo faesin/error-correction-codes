@@ -39,11 +39,51 @@ const decode = function(input, options) {
   while(input.length > (Math.pow(2, numParityBits) - 1))
     numParityBits++
 
-  const parityBitsPos = []
+  const parityBits = [],
+        parityBitsPos = [],
+        message = [...input.split('')]
+
+  //Get which bits are parity bits
   for(let i = 0; i < numParityBits; i++) 
     parityBitsPos.push(Math.pow(2, i) - 1)
 
-  console.log(parityBitsPos)
+  //Calculate the parity of the current message
+  parityBitsPos.forEach(val => {
+    let parity = 0
+    for(let i = val; i < input.length; i++) {
 
-  parityBitsPos.forEach()
+      if((i + 1) & (val + 1)) {
+        parity ^= Number(message[i])
+      }
+    }
+
+    parityBits.push(parity)
+
+  })
+
+  let error = parityBits.reduce((acc, val, curIndex) => {
+    return acc + (val * (parityBitsPos[curIndex] + 1))
+  }, 0)
+
+  const stripParityBits = (msg, parPos) => {
+    let ret = [], i = 0
+    
+    msg.forEach((val, index) => {
+      if(index === parPos[i]) {
+        i++
+        return
+      }
+
+      ret.push(val)
+    })
+
+    return ret
+  }
+
+  //No error found
+  if(!error) return stripParityBits(message, parityBitsPos).join('')
+
+  //Flip the erroneous bit
+  message[error - 1] = 1 - message[error - 1]
+  return stripParityBits(message, parityBitsPos).join('')
 }
