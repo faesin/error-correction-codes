@@ -21,7 +21,7 @@ const encode = function(input, options) {
       if(i >= curIndex) return acc
 
       // If this bit is covered by the current parity bit, XOR to parity
-      if((curIndex + 1) & (i + 1)) return Number(val)^acc;
+      if((curIndex + 1) & (i + 1)) return Number(val)^acc
 
       return acc
     }, 0)
